@@ -7,7 +7,7 @@ import torch.distributed.autograd as dist_autograd
 from torch.distributed.optim import DistributedOptimizer
 
 from rpc_study.rpc import run_study, Env
-from rpc_study.rpc import *
+from rpc_study.rpc import remote_method, remote_async
 
 
 class MyModule:
