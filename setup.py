@@ -1,8 +1,6 @@
 #!/usr/bin/env python
-
-"""The setup script."""
-
 from setuptools import setup, find_packages
+
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
@@ -10,11 +8,13 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
+
 requirements = [ ]
 
 setup_requirements = ['pytest-runner', ]
 
 test_requirements = ['pytest>=3', ]
+
 
 setup(
     author="Todd Young",
@@ -38,10 +38,15 @@ setup(
     include_package_data=True,
     keywords='rpc_study',
     name='rpc_study',
-    packages=find_packages(include=['rpc_study', 'rpc_study.*']),
+    packages=find_packages(),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
+    entry_points={
+        'console_scripts': [
+            'study = rpc_study.launcher:main',
+        ],
+    },
     url='https://github.com/yngtodd/rpc_study',
     version='0.1.0',
     zip_safe=False,
