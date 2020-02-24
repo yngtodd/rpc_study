@@ -19,9 +19,11 @@ def run_study(study):
     world_size = int(os.environ.get('WORLD_SIZE'))
 
     if rank == 0: 
+        print(f'Initializing study on rank {rank}')
         rpc.init_rpc("study", rank=rank, world_size=world_size)
         study()
     else:
+        print(f'Initializing worker on rank {rank}')
         rpc.init_rpc(f"worker{rank}", rank=rank, world_size=world_size)
 
     # block until all rpcs finish
