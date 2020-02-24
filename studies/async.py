@@ -39,6 +39,7 @@ def study():
     torch.manual_seed(0)
     t1 = torch.rand((3, 3), requires_grad=True)
     t2 = torch.rand((3, 3), requires_grad=True)
+
     output1 = module1.forward(t2)
     output2 = module2.forward(output1)
     loss = torch.add(output2, t1).sum()
