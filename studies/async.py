@@ -92,6 +92,7 @@ def study():
         torch.manual_seed(0)
         t1 = torch.rand((3, 3), requires_grad=True)
         t2 = torch.rand((3, 3), requires_grad=True)
+
         output1 = rpc_async_method(MyModule.forward, remote_module1, t2)
         output2 = rpc_async_method(MyModule.forward, remote_module2, output1.wait())
         loss = torch.add(output2.wait(), t1)
@@ -101,6 +102,15 @@ def study():
 
         new_w1 = rpc_async_method(MyModule.get_w, remote_module1).wait()
         new_w2 = rpc_async_method(MyModule.get_w, remote_module2).wait()
+
+        print(f'Old weight vs new weight: {old_w1 == new_w1}')
+        print(f'Old weight vs new weight: {old_w2 == new_w2}')
+
+        w1_consistent = (new_w1 == module1.get_w()).all()
+        w2_consistent = (new_w2 == module2.get_w()).all()
+
+        print(f'w1 consist: {w1_consistent}')
+        print(f'w2 consist: {w2_consistent}')
 
 
 if __name__=='__main__':
