@@ -28,11 +28,16 @@ class MyModule:
 
 
 def study():
+    """
+    Async multiplication using two remote modules
+    """
+    # Start with a local version
     module1 = MyModule()
     module2 = MyModule()
     params = [module1.get_w(), module2.get_w()]
     local_optim = optim.SGD(params, lr=0.05)
 
+    # Keep a copy of the old weights to make sure they change
     old_w1 = module1.w.clone().detach()
     old_w2 = module2.w.clone().detach()
 
@@ -77,9 +82,11 @@ def study():
         new_w1 = remote_async(MyModule.get_w, remote_module1).wait()
         new_w2 = remote_async(MyModule.get_w, remote_module2).wait()
 
+        # Make sure the weights have been updated
         print(f'Old weight vs new weight: {old_w1 == new_w1}')
         print(f'Old weight vs new weight: {old_w2 == new_w2}')
 
+        # Make sure the weights on the remote module and the local copy are the same
         w1_consistent = (new_w1 == module1.get_w()).all()
         w2_consistent = (new_w2 == module2.get_w()).all()
 

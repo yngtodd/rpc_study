@@ -5,6 +5,13 @@ from torch.distributed import rpc
 
 
 def run_study(study):
+    """
+    Setup RPC and run a study.
+
+    Args:
+        study: (callable) function that runs 
+        some minimal example.
+    """
     os.environ['MASTER_ADDR'] = 'localhost'
     os.environ['MASTER_PORT'] = '29500'
 
