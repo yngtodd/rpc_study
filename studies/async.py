@@ -9,33 +9,6 @@ from torch.distributed.optim import DistributedOptimizer
 from rpc_study.rpc import run_study, Env
 from rpc_study.rpc import *
 
-"""
-def remote_method(method, obj_rref, *args, **kwargs):
-    return rpc.remote(
-        obj_rref.owner(),
-        _call_method,
-        args=[method, obj_rref] + list(args),
-        kwargs=kwargs,
-    )
-"""
-
-def rpc_async_method(method, obj_rref, *args, **kwargs):
-    """
-    Call rpc.rpc_async on a method in a remote object.
-    Args:
-        method: the method (for example, Class.method)
-        obj_rref (RRef): remote reference to the object
-        args: positional arguments to pass to the method
-        kwargs: keyword arguments to pass to the method
-    Returns a Future to the method call result.
-    """
-    return rpc.rpc_async(
-        obj_rref.owner(),
-        _call_method,
-        args=[method, obj_rref] + list(args),
-        kwargs=kwargs,
-    )
-
 
 class MyModule:
     lock = threading.Lock()
@@ -93,15 +66,15 @@ def study():
         t1 = torch.rand((3, 3), requires_grad=True)
         t2 = torch.rand((3, 3), requires_grad=True)
 
-        output1 = rpc_async_method(MyModule.forward, remote_module1, t2)
-        output2 = rpc_async_method(MyModule.forward, remote_module2, output1.wait())
+        output1 = remote_async(MyModule.forward, remote_module1, t2)
+        output2 = remote_async(MyModule.forward, remote_module2, output1.wait())
         loss = torch.add(output2.wait(), t1)
 
         dist_autograd.backward([loss.sum()])
         dist_optim.step()
 
-        new_w1 = rpc_async_method(MyModule.get_w, remote_module1).wait()
-        new_w2 = rpc_async_method(MyModule.get_w, remote_module2).wait()
+        new_w1 = remote_async(MyModule.get_w, remote_module1).wait()
+        new_w2 = remote_async(MyModule.get_w, remote_module2).wait()
 
         print(f'Old weight vs new weight: {old_w1 == new_w1}')
         print(f'Old weight vs new weight: {old_w2 == new_w2}')

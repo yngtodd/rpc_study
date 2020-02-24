@@ -1,18 +1,8 @@
 from torch.distributed import rpc
 
-"""
 def remote_method(method, rref, *args, **kwargs):
-    args = [method, rref] + list(args),
+    args = [method, rref] + list(args)
     return rpc.remote(rref.owner(), _call_method, args=args, kwargs=kwargs)
-"""
-
-def remote_method(method, obj_rref, *args, **kwargs):
-    return rpc.remote(
-        obj_rref.owner(),
-        _call_method,
-        args=[method, obj_rref] + list(args),
-        kwargs=kwargs,
-    )
 
 
 def remote_sync(method, rref, *args, **kwargs):
